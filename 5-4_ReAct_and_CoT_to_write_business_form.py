@@ -7,6 +7,12 @@ from openai import OpenAI
 from openai.types.chat.chat_completion_chunk import ChoiceDeltaToolCall
 from pydantic import BaseModel, Field
 
+"""
+课后挑战:
+1.为我们的报销政策增加一条新规则：“如果总金额超过2000元，且员工职级不是‘总监’，则报销级别不能是‘VIP’。”
+2.只需要修改你的System Prompt，看看Agent能否在第二次思考时，正确地应用这条新规则，并调整最终的报销级别。
+"""
+
 dotenv.load_dotenv()
 
 class GetEmployeeInfoInput(BaseModel):
@@ -54,6 +60,13 @@ def calculator(expression: str) -> str:
 
 SYSTEM_PROMPT = """
 你是一個智能企業報銷單助手。你的任務是根據用戶的請求和公司政策，幫助員工填寫並提交差旅報銷單
+
+公司的報銷政策如下：
+- 如果總金額超過 5000 元，則報銷等級必須是 'VIP'
+- 如果總金額超過 3000 元，則報銷等級必須是 '高級'
+- 其餘情況，則報銷等級必須是 '標準'
+- 但是，如果員工職級不是'總監'，則報銷等級不能是'VIP'
+- 另外，如果員工職級不是'經理'，則報銷等級不能是'高級'
 
 你必須遵循以下思考和行動模式 (ReAct):
 
